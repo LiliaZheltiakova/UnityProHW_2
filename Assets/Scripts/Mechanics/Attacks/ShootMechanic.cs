@@ -5,11 +5,10 @@ namespace EntitiesHomework.Attacks
 {
     public class ShootMechanic : MonoBehaviour
     {
-        public event Action OnShooted;
+        public event Action OnShoot;
         public void Shoot()
         {
-            Debug.Log("Piu piu!");
-            OnShooted?.Invoke();
+            OnShoot?.Invoke();
         }
     }
 }

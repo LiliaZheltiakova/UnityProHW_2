@@ -4,6 +4,6 @@ namespace EntitiesHomework
 {
     public interface IRotateComponent
     {
-        void Rotate(Vector2 mousePositionOnScreen);
+        void Rotate(Vector2 rotateAxis);
     }
 }

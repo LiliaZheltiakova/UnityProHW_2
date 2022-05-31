@@ -1,24 +1,32 @@
 using UnityEngine;
 using Entities;
+using GameElements;
+using GameSystem;
 
 namespace EntitiesHomework
 {
-    public class RotateController : MonoBehaviour
+    public class RotateController : MonoBehaviour, 
+        IGameReadyElement, 
+        IGameFinishElement
     {
-        [SerializeField] private MonoEntity player;
-        private IRotateComponent rotateComponent;
+        private PlayerService playerService;
+        private MouseManager mouseManager;
 
-        private void Start()
+        void IGameReadyElement.ReadyGame(GameElements.IGameSystem system)
         {
-            this.rotateComponent = this.player.Element<IRotateComponent>();
+            this.playerService = system.GetService<PlayerService>();
+            this.mouseManager = system.GetService<MouseManager>();
+            this.mouseManager.OnInput += this.OnInputEvent;
         }
-
-        private void Update()
+        
+        void IGameFinishElement.FinishGame(GameElements.IGameSystem system)
         {
-            if (Input.GetAxis("Mouse X") != 0f || Input.GetAxis("Mouse Y") != 0f)
-            {
-                this.rotateComponent.Rotate(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")));
-            }
+            this.mouseManager.OnInput -= this.OnInputEvent;
+        }
+        
+        private void OnInputEvent(Vector2 rotateAxes)
+        {
+            this.playerService.Player.Element<IRotateComponent>().Rotate(rotateAxes);
         }
     }
 }

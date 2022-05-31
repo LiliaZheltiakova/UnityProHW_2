@@ -1,30 +1,32 @@
-using System;
 using UnityEngine;
-using Entities;
+using GameElements;
+using GameSystem;
 
 namespace EntitiesHomework
 {
-    public class MoveController : MonoBehaviour
-    {
-        [SerializeField] private MonoEntity player;
-        private IMoveComponent moveComponent;
+    public class MoveController : MonoBehaviour, 
+        IGameReadyElement, 
+        IGameFinishElement
 
-        private void Start()
+    {
+        private PlayerService playerService;
+        private InputManager inputManager;
+
+        void IGameReadyElement.ReadyGame(GameElements.IGameSystem system)
         {
-            this.moveComponent = this.player.Element<IMoveComponent>();
+            this.playerService = system.GetService<PlayerService>();
+            this.inputManager = system.GetService<InputManager>();
+            this.inputManager.OnInput += this.OnInputEvent;
         }
 
-        private void Update()
+        void IGameFinishElement.FinishGame(GameElements.IGameSystem system)
         {
-            if (Input.GetAxis("Horizontal") != 0f)
-            {
-                this.moveComponent.Move(new Vector3(Input.GetAxis("Horizontal"), 0f, 0f));
-            }
-            
-            if (Input.GetAxis("Vertical") != 0f)
-            {
-                this.moveComponent.Move(new Vector3(0f, 0f, Input.GetAxis("Vertical")));
-            }
+            this.inputManager.OnInput -= this.OnInputEvent;
+        }
+
+        private void OnInputEvent(Vector3 direction)
+        {
+            this.playerService.Player.Element<IMoveComponent>().Move(direction);
         }
     }
 }

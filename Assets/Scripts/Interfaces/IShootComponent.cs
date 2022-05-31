@@ -5,7 +5,6 @@ namespace EntitiesHomework
 {
     public interface IShootComponent
     {
-        event Action OnShooted;
         void Shoot();
     }
 }

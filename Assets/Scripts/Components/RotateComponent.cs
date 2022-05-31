@@ -5,9 +5,9 @@ namespace EntitiesHomework
     public class RotateComponent : MonoBehaviour, IRotateComponent
     {
         [SerializeField] private RotateMechanic controller;
-        public void Rotate(Vector2 mousePositionOnScreen)
+        public void Rotate(Vector2 rotateAxis)
         {
-            this.controller.Rotate(mousePositionOnScreen);
+            this.controller.Rotate(rotateAxis);
         }
     }
 }

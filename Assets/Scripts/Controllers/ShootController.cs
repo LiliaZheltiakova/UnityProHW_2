@@ -1,25 +1,36 @@
-using System;
-using Entities;
 using UnityEngine;
+using GameElements;
+using GameSystem;
 
 namespace EntitiesHomework
 {
-    public class ShootController : MonoBehaviour
+    public class ShootController : MonoBehaviour, 
+        IGameReadyElement, 
+        IGameFinishElement
     {
-        [SerializeField] private MonoEntity player;
-        private IShootComponent attackComponent;
+        private PlayerService playerService;
+        private InputManager inputManager;
+        private MouseManager mouseManager;
 
-        private void OnEnable()
+        void IGameReadyElement.ReadyGame(GameElements.IGameSystem system)
         {
-            this.attackComponent = this.player.Element<IShootComponent>();
+            this.playerService = system.GetService<PlayerService>();
+            this.inputManager = system.GetService<InputManager>();
+            this.mouseManager = system.GetService<MouseManager>();
+            
+            this.inputManager.OnFire += this.OnInputEvent;
+            this.mouseManager.OnFire += this.OnInputEvent;
         }
 
-        private void Update()
+        void IGameFinishElement.FinishGame(GameElements.IGameSystem system)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                attackComponent.Shoot();
-            }
+            this.inputManager.OnFire -= this.OnInputEvent;
+            this.mouseManager.OnFire -= this.OnInputEvent;
+        }
+
+        private void OnInputEvent()
+        {
+            this.playerService.Player.Element<IShootComponent>().Shoot();
         }
     }
 }
